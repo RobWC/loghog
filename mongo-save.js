@@ -18,16 +18,15 @@ util.inherits(MongoSaver, events.EventEmitter);
 
 exports.MongoSaver = MongoSaver;
 
-MongoSaver.listen = function() {
+MongoSaver.prototype.listen = function() {
   var self = this;
   
   self.db.open(function(err, result) {
-    parser.on(self.saveOn, function(data) {
+    self.parser.on(self.saveOn, function(data) {
       self.db.collection(self.collection, function(err, collection) {
         collection.insert(data);
       });
     });
   });
-
   
 };

@@ -11,15 +11,13 @@ var UdpListener = function(port,protocol,parser) {
 
 util.inherits(UdpListener, events.EventEmitter);
 
-exports.UdpListener = UdpListener;
-
-UdpListener.listen = function() {
+UdpListener.prototype.listen = function() {
   var self = this;
   
   var server = dgram.createSocket(self.protocol);
 
   server.on("message", function(msg, rinfo) {
-    self.parser.parse(msg);
+    self.parser.parse(msg.toString());
   });
 
   server.on("listening", function() {
@@ -27,5 +25,7 @@ UdpListener.listen = function() {
     console.log("server listening " + address.address + ":" + address.port);
   });
 
-  server.bind(listenPort);
+  server.bind(self.port);
 };
+
+exports.UdpListener = UdpListener;
