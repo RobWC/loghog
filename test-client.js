@@ -1,17 +1,14 @@
 var ioClient = require('socket.io-client');
 
-var options = {
-  
-};
-
-var client = ioClient.connect('http://localhost:2000?username=shoes&password=socks');
+var client = ioClient.connect('http://localhost:2000/logs?username=shoes&password=socks');
 
 client.on('connect', function () {
   // socket connected
 });
 
-client.on('custom event', function () {
+client.on('a message', function (data) {
   // server emitted a custom event
+  console.log(data);
 });
 
 client.on('disconnect', function () {
