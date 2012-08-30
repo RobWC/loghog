@@ -5,6 +5,7 @@ var util = require('util');
 var events = require('events');
 
 var MongoSaver = function(host,port,database,collection,parser,saveOn) {
+  events.EventEmitter.call(this);
   this.host = host;
   this.port = port;
   this.parser = parser;
