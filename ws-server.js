@@ -1,5 +1,10 @@
 var util = require('util');
 var events = require('events');
+var fs = require('fs');
+
+var privateKey = fs.readFileSync('./keys/server-np.key').toString();
+var certificate = fs.readFileSync('./keys/server.crt').toString();
+var ca = fs.readFileSync('./keys/ca.crt').toString();
 
 var WSServer = function(port) {
   events.EventEmitter.call(this);
@@ -13,7 +18,7 @@ util.inherits(WSServer, events.EventEmitter);
 WSServer.prototype.start = function() {
   var self = this;
   
-  self.io = this.ioServer.listen(self.port);
+  self.io = this.ioServer.listen(self.port,{key:privateKey,cert:certificate,ca:ca});
   
   self.io.configure(function () {
     self.io.set('transports', ['websocket']);
@@ -55,7 +60,7 @@ var wsServer = new WSServer(2000);
 wsServer.start();
 
 wsServer.on('logs', function(data){
-  //util.log(util.inspect(data))
+  util.log(util.inspect(data))
   //console.log('XXXX')
 });
 

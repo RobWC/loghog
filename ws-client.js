@@ -64,7 +64,7 @@ var cfg = configManager.parse('./test.cfg');
 var udpServer = new udpListener(cfg.config.listener.port,cfg.config.listener.type,parser);
 udpServer.listen();
   
-var wsClient = new WSClient('http://localhost:2000?username=shoes&password=socks');
+var wsClient = new WSClient('https://localhost:2000?username=shoes&password=socks');
 wsClient.conenct();
 wsClient.emit('logs','hello')
 
