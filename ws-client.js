@@ -1,41 +1,29 @@
-var ioClient = require('socket.io-client');
 var util = require('util');
 var events = require('events');
-
-var client = ioClient.connect('http://localhost:2000/logs?username=shoes&password=socks');
-
-client.on('connect', function () {
-  // socket connected
-});
-
-client.on('a message', function (data) {
-  // server emitted a custom event
-  console.log(data);
-});
-
-client.on('disconnect', function () {
-  // socket disconnected
-});
-
-client.send('hello');
 
 var WSClient = function(url,options) {
   events.EventEmitter.call(this);
   this.url = url;
   this.options = options;
+  this.ioClient = require('socket.io-client');
   this.client;
+  this.channels = new Object();
 };
 
 util.inherits(WSClient, events.EventEmitter);
 
-WSClient.conenct = function(callback,options) {
+WSClient.prototype.conenct = function(callback,options) {
   var self = this;
     
-  self.client = ioClient.connect(self.url);
+  self.client = self.ioClient.connect(self.url);
   
   self.client.on('connect', function() {
     util.log('Client Connected')
   });
+  
+  self.client.on('control', function(data){
+    console.log(data);
+  })
   
   if (callback) {
     callback(options);
@@ -44,14 +32,42 @@ WSClient.conenct = function(callback,options) {
 };
 
 //callback recieves data
-WSClient.subscribe = function(channel,callback) {
+WSClient.prototype.subscribe = function(channel,callback) {
   var self = this;
   
-  self.client.on(channel,callback(data));
+  self.channels[channel] = true;
+  
+  self.client.on(channel,callback);
 };
 
-WSClient.send = function(channel,message) {
+WSClient.prototype.unsubscribe = function(channel,callback) {
+  var self = this;
+  
+  self.channels[channel] = false;
+  
+  self.client.removeListener(channel,callback);
+};
+
+WSClient.prototype.send = function(channel,message) {
   var self = this;
   
   self.client.emit(channel,message);
 };
+
+//TEST IMPLEMENTATION
+var configManager = require('./config-manager.js').ConfigManager;
+var udpListener = require('./udp-listener.js').UdpListener;
+var logParser = require('./logparser.js').LogParser;
+
+var parser = new logParser();
+var cfg = configManager.parse('./test.cfg');
+var udpServer = new udpListener(cfg.config.listener.port,cfg.config.listener.type,parser);
+udpServer.listen();
+  
+var wsClient = new WSClient('http://localhost:2000?username=shoes&password=socks');
+wsClient.conenct();
+wsClient.emit('logs','hello')
+
+parser.on('save',function(data){
+  wsClient.send('logs',data);
+})
