@@ -14,7 +14,6 @@ wsServer.on('logs', function(data){
   util.log(util.inspect(data))
   //we need to insert this into mongodb lets try doing it directly O_o
   //console.log('XXXX')
-  
 });
 
 wsServer.on('telme', function(data){
