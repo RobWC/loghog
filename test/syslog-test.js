@@ -8,4 +8,4 @@ function sendMessage(message) {
   client.send(buff, 0, buff.length, 1234, "localhost");
 };
 
-setInterval(sendMessage,1,message);
+setInterval(sendMessage,5000,message);
