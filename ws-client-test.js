@@ -8,7 +8,7 @@ var cfg = configManager.parse('./ws-client-test.cfg');
 var udpServer = new udpListener(cfg.config.listener.port,cfg.config.listener.type,parser);
 udpServer.listen();
   
-var wsClient = new WSClient(config.wsClient.protocol + '://' + config.wsClient.host + ':' + config.wsClient.port  + '?username=' + config.wsClient.username + '&password=' + config.wsClient.password);
+var wsClient = new WSClient(cfg.config.wsClient.protocol + '://' + cfg.config.wsClient.host + ':' + cfg.config.wsClient.port  + '?username=' + cfg.config.wsClient.username + '&password=' + cfg.config.wsClient.password);
 wsClient.conenct();
 wsClient.emit('logs','hello')
 
