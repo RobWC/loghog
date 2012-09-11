@@ -4,11 +4,11 @@ var logParser = require('./lib/logparser.js').LogParser;
 var WSClient = require('./lib/ws-client.js').WSClient;
 
 var parser = new logParser();
-var cfg = configManager.parse('./test.cfg');
+var cfg = configManager.parse('./ws-client-test.cfg');
 var udpServer = new udpListener(cfg.config.listener.port,cfg.config.listener.type,parser);
 udpServer.listen();
   
-var wsClient = new WSClient('https://localhost:2000?username=shoes&password=socks');
+var wsClient = new WSClient(config.wsClient.protocol + '://' + config.wsClient.host + ':' + config.wsClient.port  + '?username=' + config.wsClient.username + '&password=' + config.wsClient.password);
 wsClient.conenct();
 wsClient.emit('logs','hello')
 

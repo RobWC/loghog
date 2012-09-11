@@ -4,9 +4,9 @@ var configManager = require('./lib/config-manager.js').ConfigManager;
 var util = require('util');
 
 ///TEST IMPLEMENTATION
-var wsServer = new WSServer(2000);
-var cfg = configManager.parse('./server-test.cfg');
-var mongoSv = new mongoSave(cfg.config.mongo.server,cfg.config.mongo.port,cfg.config.mongo.database,cfg.config.mongo.collection,wsServer,'logs');
+var cfg = configManager.parse('./ws-server-test.cfg');
+var wsServer = new WSServer(cfg.wsServer.port);
+var mongoSv = new mongoSave(cfg.config.mongo.server,cfg.config.mongo.port,cfg.config.mongo.database,cfg.config.mongo.collection,wsServer,config.mongo.saveOn);
 wsServer.start();
 mongoSv.listen();
 
